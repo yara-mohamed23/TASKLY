@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { validateName, validateEmail, passwordCriteria } from './validation';
 
 export default function Page() {
   // Form States
@@ -18,6 +19,15 @@ export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const router = useRouter();
 
+  // هنا بناخد الباسورد اللي بيتكتب دلوقتي
+const currentPassword = formData.password;
+
+// بنشوفه حقق الشروط ولا لسه عشان ننور العلامات الخضراء
+const isMinLength = passwordCriteria.minLength(currentPassword);
+const isNoWhitespace = passwordCriteria.noWhitespace(currentPassword);
+const isUpperLowerDigit = passwordCriteria.hasUpperLowerDigit(currentPassword);
+const isSpecial = passwordCriteria.hasSpecial(currentPassword);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData, // 1. انسخ كل البيانات القديمة زي ما هي
@@ -25,55 +35,35 @@ export default function Page() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-	e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault(); // دي بتمنع الصفحة إنها تعمل ريفريش
 
-	console.log("🚀 الزرار اتداس عليه والدالة اشتغلت!"); // 👈 ضيفي السطر ده للتأكد
-    console.log("البيانات المكتوبة:", formData);
-    let newErrors: Record<string, string> = {};
-    if (!formData.name) {
-      newErrors.name = 'الاسم مطلوب!';
-    }
-    if (!formData.email) {
-      newErrors.email = 'الإيميل مطلوب!';
-    }
-    if (!formData.jobTitle) {
-      newErrors.jobTitle = 'الوظيفة مطلوبه!';
-    }
-    if (!formData.password) {
-      newErrors.password = 'كلمة السر مطلوبة!';
-    }
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'كلمات السر غير متطابقة!';
-    }
+  // 1. تفتيش الاسم والإيميل من صندوق الأدوات
+  const nameErr = validateName(formData.name);
+  const emailErr = validateEmail(formData.email);
 
-    setErrors(newErrors);
-	console.log("الأخطاء اللي طلعت:", newErrors); // 👈 وده عشان تشوف الأخطاء
+  // 2. تفتيش الباسورد
+  let passwordErr = null;
+  if (!formData.password) {
+    passwordErr = "Password is required.";
+  } else if (!isMinLength || !isUpperLowerDigit || !isSpecial || !isNoWhitespace) {
+    passwordErr = "Password does not meet all security guidelines.";
+  }
 
-    // 🎯 الخطوة الجاية: لو مفيش أي أخطاء (البيانات سليمة 100%)
-    if (Object.keys(newErrors).length === 0) {
-      setIsSubmitting(true);
+  // 3. لو فيه أي خطأ، هنحفظه في الـ State ونوقف العملية فوراً
+  if (nameErr || emailErr || passwordErr) {
+    setErrors({
+      name: nameErr || "",
+      email: emailErr || "",
+      password: passwordErr || "",
+      // لو عندك حقل تأكيد الباسورد ضيفيه هنا
+    });
+    return; // الكلمة دي معناها: أوقف هنا وماتكملش إرسال للسيرفر!
+  }
 
-      // هنا بنحاكي إرسال البيانات للـ API / Server
-      setTimeout(() => {
-        alert('تم إنشاء الحساب بنجاح! 🎉');
-
-        // 1. تصفير الـ Form
-        setFormData({
-          name: '',
-          email: '',
-          jobTitle: '',
-          password: '',
-          confirmPassword: '',
-        });
-
-        setIsSubmitting(false);
-
-        // 2. التوجيه لصفحة الـ Login
-        router.push('/login');
-      }, 1500);
-    }
-  };
+  // هنا بقى هنكتب كود الإرسال للسيرفر لأننا متأكدين إن كله سليم 100%
+  console.log("البيانات سليمة وجاهزة تتبعت");
+};
 
   return (
     <>
