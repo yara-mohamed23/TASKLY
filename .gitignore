@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# Local environment variables
+.env*.local
+.envgit reset --soft HEAD~1
 
 # vercel
 .vercel
