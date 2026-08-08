@@ -85,7 +85,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[color:var(--color-surface-low)] p-4">
-      <div className="text-[color:var(--color-primary)] font-bold text-title-md">
+      <div className="text-[color:var(--color-primary)] font-bold text-title-md mb-4">
         <span className="">🗹</span>
         TASKLY
       </div>
@@ -132,7 +132,7 @@ export default function Page() {
               Email
             </label>
             <input
-              type="text" // Type can also be "email" for better mobile keyboard
+              type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
@@ -155,6 +155,7 @@ export default function Page() {
               placeholder="Enter Job Title"
               className="w-full border border-[color:var(--color-border-light)] bg-[color:var(--color-surface-low)] p-3 rounded focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary)]"
             />
+            {errors.jobTitle && <p className="text-red-500 text-sm mt-1">{errors.jobTitle}</p>}
           </div>
 
           {/* Passwords Fields */}
@@ -166,7 +167,7 @@ export default function Page() {
               </label>
               <div className="relative">
                 <input
-                  type={showPass ? 'text' : 'password'} // تم إصلاح نوع الإدخال
+                  type={showPass ? 'text' : 'password'}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
@@ -190,7 +191,7 @@ export default function Page() {
                 Confirm Password
               </label>
               <input
-                type={showPass ? 'text' : 'password'} // تم إصلاح نوع الإدخال
+                type={showPass ? 'text' : 'password'}
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
@@ -217,6 +218,7 @@ export default function Page() {
             Log in
           </a>
         </div>
+
       </div>
     </div>
   );

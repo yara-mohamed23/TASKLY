@@ -1,12 +1,13 @@
 export const logInUsers = async (formData: any) => {
   try {
     const response = await fetch(
-      'https://ahzkooeyjnhrbsuqbzza.supabase.co/auth/v1/token?grant_type=password',
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/token?grant_type=password`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'apikey': process.env.NEXT_PUBLIC_SUPABASE_API_KEY || '',},
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+        },
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,

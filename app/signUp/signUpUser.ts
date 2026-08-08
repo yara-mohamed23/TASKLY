@@ -1,13 +1,12 @@
 export const signUpUser = async (formData: any) => {
   try {
     const response = await fetch(
-      'https://ahzkooeyjnhrbsuqbzza.supabase.co/auth/v1/signup',
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/signup`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'apikey': process.env.NEXT_PUBLIC_SUPABASE_API_KEY || '',
-          Authorization: 'Bearer sb_secret_3AJKvpYNZ5WWE3_tPQc2yg_2taJHx-9',
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
         },
         body: JSON.stringify({
           email: formData.email,
